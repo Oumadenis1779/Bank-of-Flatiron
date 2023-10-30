@@ -1,63 +1,65 @@
 import React, { useState } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
-function TransactionForm({ onAddTransaction }) {
-  const [category, setCategory] = useState('');
+const TransactionForm = ({ addTransaction }) => {
+  const [selectedDate, setSelectedDate] = useState(null);
   const [description, setDescription] = useState('');
+  const [category, setCategory] = useState('');
   const [amount, setAmount] = useState('');
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
 
-    // Validate input fields, you can add more validation logic here
-
-    // Create a new transaction object
-    const newTransaction = {
-      category: category,
-      description: description,
-      amount: parseFloat(amount), // Parse amount as a float
-    };
-
-    // Call the callback function to add the new transaction
-    onAddTransaction(newTransaction);
-
-    // Reset input fields after submission
-    setCategory('');
-    setDescription('');
-    setAmount('');
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (selectedDate && description && category && amount) {
+      addTransaction({
+        date: selectedDate.toISOString().split('T')[0], // Format the date as "YYYY-MM-DD"
+        description,
+        category,
+        amount,
+        id: Date.now(),
+      });
+      setSelectedDate(null);
+      setDescription('');
+      setCategory('');
+      setAmount('');
+    }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <label htmlFor="category">Category:</label>
-      <input
-        type="text"
-        id="category"
-        value={category}
-        onChange={(e) => setCategory(e.target.value)}
-        required
+      <DatePicker
+        selected={selectedDate}
+        onChange={handleDateChange}
+        placeholderText="Select a Date"
+        dateFormat="yyyy-MM-dd"
+        isClearable
       />
-
-      <label htmlFor="description">Description:</label>
       <input
         type="text"
-        id="description"
+        placeholder="Description"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
-        required
       />
-
-      <label htmlFor="amount">Amount:</label>
+      <input
+        type="text"
+        placeholder="Category"
+        value={category}
+        onChange={(e) => setCategory(e.target.value)}
+      />
       <input
         type="number"
-        id="amount"
+        placeholder="Amount"
         value={amount}
         onChange={(e) => setAmount(e.target.value)}
-        required
       />
-
       <button type="submit">Add Transaction</button>
     </form>
   );
-}
+};
 
 export default TransactionForm;
+

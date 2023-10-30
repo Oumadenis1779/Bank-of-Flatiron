@@ -1,26 +1,14 @@
-import React, {useState} from "react";
+import React from 'react';
 
- function SearchBar({onSearch}) {
-    const [searchTerm, setSearchTerm] = useState("");
-
-    const handleInputChange = (event) => {
-        const { value } = event.target;
-        setSearchTerm(value);
-        onSearch(value); // Pass the search term to the parent component for filtering transactions
-      };
-
+const SearchBar = ({ searchTerm, setSearchTerm }) => {
   return (
-    <div>
-      <label htmlFor="search">Search:</label>
-      <input
-        type="text"
-        id="search"
-        value={searchTerm}
-        onChange={handleInputChange}
-        placeholder="Search by description"
-      />
-    </div>
-  )
-}
+    <input
+      type="text"
+      placeholder="Search by Description"
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+    />
+  );
+};
 
 export default SearchBar;
